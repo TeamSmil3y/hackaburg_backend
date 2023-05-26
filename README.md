@@ -68,8 +68,10 @@ Where `source_hub` and `destination_hub` are objects with the attributes `latitu
 Relevant rides for a searching user are
 + every ride with the same destination
 + which comes from the same direction
+    + The directions are measured in the angle the vectors of the driver to the destination and the passenger to the destination, and it only sees rides as eligible, if the angle i below a certain threshold. The threshold is dependent from the distance between the passenger and the destination, so when its nearer to the destination the angle may be greater, and if the distance is greater, the angle will approach roundabout 45°. The equation is `threshold = (180° - 45°)*e^(-dist(passenger; destination)) + 45°`
 
 <img src="https://imgur.com/kmT03FQ.png" width="50%">
+
 
 
 ### Ride Workload Calc
