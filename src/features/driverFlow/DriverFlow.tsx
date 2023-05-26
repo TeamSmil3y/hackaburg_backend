@@ -21,8 +21,8 @@ export const DriverFlow = () => {
 			)}
 			{step === "ride" && (
 				<iframe src="https://giphy.com/embed/5bo92jPBIWKtHUump7" width="340" height="480" frameBorder="0"
-				        className="giphy-embed"
-				        allowFullScreen></iframe>
+					className="giphy-embed"
+					allowFullScreen></iframe>
 			)}
 			{step === "final" && (
 				<div>You arrived!</div>

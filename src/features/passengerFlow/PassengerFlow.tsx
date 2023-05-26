@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Map } from "../map/map"
 
 export const PassengerFlow = () => {
 	const [step, setStep] = useState<"rideDetails" | "drivers" | "ride" | "final">("rideDetails")
@@ -13,6 +14,7 @@ export const PassengerFlow = () => {
 
 	return (
 		<div>
+			<Map />
 			{step === "rideDetails" && (
 				<button onClick={() => setStep("drivers")}>Enter destination and when you ready to departure</button>
 			)}
@@ -21,8 +23,8 @@ export const PassengerFlow = () => {
 			)}
 			{step === "ride" && (
 				<iframe src="https://giphy.com/embed/5bo92jPBIWKtHUump7" width="340" height="480" frameBorder="0"
-				        className="giphy-embed"
-				        allowFullScreen></iframe>
+					className="giphy-embed"
+					allowFullScreen></iframe>
 			)}
 			{step === "final" && (
 				<div>You arrived!</div>
