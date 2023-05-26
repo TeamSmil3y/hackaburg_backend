@@ -28,11 +28,12 @@ export const Map = () => {
 
     useEffect(() => {
     const func = async () => {
+    var map = null
     try {
       var loc = await get_location();
 
       // Render map
-      var map = new mapboxgl.Map({
+      map = new mapboxgl.Map({
         container: 'map',
         style: 'mapbox://styles/mapbox/streets-v12',
         center: loc,
@@ -60,9 +61,10 @@ export const Map = () => {
                         'features': [
                             {
                             'type': 'Feature',
+                            'properties': {},
                             'geometry': {
                                 'type': 'Point',
-                                'coordinates': loc as any
+                                'coordinates': loc
                             }
                         }
                     ]
