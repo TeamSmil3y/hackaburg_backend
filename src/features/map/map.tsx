@@ -29,10 +29,10 @@ export const Map = () => {
     useEffect(() => {
     const func = async () => {
     try {
-      const loc = await get_location();
+      var loc = await get_location();
 
       // Render map
-      const map = new mapboxgl.Map({
+      var map = new mapboxgl.Map({
         container: 'map',
         style: 'mapbox://styles/mapbox/streets-v12',
         center: loc,
