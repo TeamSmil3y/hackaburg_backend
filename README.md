@@ -51,9 +51,9 @@ The script `main/dataset/import_data.py` imports these two csv-sheets into the D
 ### Pseudodata
 Because we needed data about the usual workload of offices/hubs, we created pseudodata for every weekday and every hour for all companies.
 The data is based on the function
-![](https://imgur.com/YRstch0.png)
+<img src="https://imgur.com/YRstch0.png" width="50%"/>
 with some additional randomized parameters.
-![](https://imgur.com/Ig5DG2T.png)
+<img src="https://imgur.com/Ig5DG2T.png" width="50%"/>
 
 
 ## Utils
@@ -69,7 +69,7 @@ Relevant rides for a searching user are
 + every ride with the same destination
 + which comes from the same direction
 
-![Visualization of relevant ride selection](https://imgur.com/kmT03FQ.png)
+<img src="https://imgur.com/kmT03FQ.png" width="50%">
 
 
 ### Ride Workload Calc

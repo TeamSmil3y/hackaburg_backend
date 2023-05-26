@@ -166,3 +166,8 @@ def find_rides(request):
 def update(request):
     user = request.user
     return Response(data=request_update(user), status=200)
+
+
+@api_view(['GET'])
+def get_hubs(request):
+    return Response(data=Hub.objects.all(), status=200)

@@ -29,4 +29,5 @@ urlpatterns = [
     path('finish-ride/', views.finish_ride),
     path('find-rides/', views.find_rides),
     path('update/', views.update),
+    path('get_hubs/', views.get_hubs)
 ]
