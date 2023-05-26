@@ -62,7 +62,7 @@ export const Map = () => {
                             'type': 'Feature',
                             'geometry': {
                                 'type': 'Point',
-                                'coordinates': loc
+                                'coordinates': loc as any
                             }
                         }
                     ]
