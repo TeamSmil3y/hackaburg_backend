@@ -1,1 +1,1 @@
-web: gunicorn 'hackaburg_backend.wsgi'
+web: gunicorn hackaburg_backend.wsgi
