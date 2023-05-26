@@ -1,4 +1,4 @@
-# HubHopper.app
+# api.HubHopper.app
 Hackaburg-Project backend
 
 ## SQL Database
