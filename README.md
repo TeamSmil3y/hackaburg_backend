@@ -55,6 +55,8 @@ The data is based on the function
 with some additional randomized parameters.
 <img src="https://imgur.com/Ig5DG2T.png" width="50%"/>
 
+### Hub Optimization
+
 
 ## Utils
 

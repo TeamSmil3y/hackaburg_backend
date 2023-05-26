@@ -81,6 +81,8 @@ class Hub(models.Model):
     latitude = models.FloatField()
     longitude = models.FloatField()
 
+    info = models.CharField(max_length=100, blank=True, default="")
+
     def __sub__(self, other):
         a = (self.latitude, self.longitude)
         b = (other.latitude, other.longitude)
