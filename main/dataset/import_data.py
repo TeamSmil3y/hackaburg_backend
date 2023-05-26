@@ -1,6 +1,6 @@
 from ..models import *
 import re
-"""
+
 with open("main/dataset/ratisbona-companies.csv", "r") as f:
     r = f.readlines()
 
@@ -51,4 +51,4 @@ for line in r[1:]:
         longitude=lon,
         company_id=company_id
     )
-    
+    """

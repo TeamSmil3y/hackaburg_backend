@@ -100,6 +100,9 @@ class Hub(models.Model):
         lat2, lon2 = other.latitude, other.longitude#destination
 
         return np.array([lat2-lat1, lon2-lon1])
+
+
+
     
 class Ride(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
