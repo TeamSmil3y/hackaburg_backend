@@ -118,6 +118,8 @@ class Ride(models.Model):
     passengers = models.ManyToManyField(User, through="Ride2Passengers")
     
     is_full = models.BooleanField(default=False)
+
+    points = models.IntegerField(default=0)
     
     def get_duration(self, additional=None):
         sources = [i.source_hub for i in self.passengers.all()]

@@ -53,6 +53,10 @@ def create_ride(request):
     driver = request.user
     
     ride = Ride.objects.create(source_hub=source_hub, destination_hub=destination_hub, driver=driver)
+
+    ride.points = calc_points(ride)
+    ride.save()
+
     low_points, company_low_points = calc_points_warning(ride)
     return Response({"ride": serializers.serialize("json", [ride]), "low_points_warning": low_points, "company_low_points": company_low_points}, status=200)
 
@@ -149,6 +153,10 @@ def accept_join_request(request):
     JoinRequest.remove_all(passenger)
 
     join_ride(ride=ride, user=passenger, hub=Hub.objects.get(id=hub))
+
+    ride.points = calc_points(ride)
+    ride.save()
+
     push_event(user=passenger, event={'type': "joined_ride", "ride": ride})
     return Response(status=200)
 
