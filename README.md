@@ -79,7 +79,7 @@ Located in: `main/ride_workload_calc.py`
 returns Integer [in %], which is the average percentage workload for the given time and weekday.
 The points have the following constraints:
 ```
-points ~ 1/workload`
+points ~ 1/workload
 points ~ number_passengers
 ```
 
