@@ -163,3 +163,8 @@ Endpoint _/update/_
 `update(request)`
 GET
 RESPONSE: update (see **Update Manager**)
+
+Endpoint _/get_hubs/_
+`get_hubs()`
+GET
+RESPONSE hubs (list of objects)
