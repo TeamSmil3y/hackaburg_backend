@@ -31,7 +31,6 @@ export const Map = () => {
         }
         func()
     }, [])
-    console.log(location)
     mapboxgl.accessToken = 'pk.eyJ1IjoibHN0dW1hIiwiYSI6ImNsaTN0dnc3ZDBpMTkzZW1seml3NTZobDUifQ._Fo8j6VzHhLj-BDC5EW_xg';
     setTimeout(() => {const map: mapboxgl.Map = new mapboxgl.Map({
         container: 'map', // container ID
