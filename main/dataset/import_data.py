@@ -10,9 +10,7 @@ Hub.objects.all().delete()
 for line in r[1:]:
     print(line)
     c_id, street, street_number, city, postal_code, lat, lon, name = line.split(",", 7)
-    
 
-        
     h, created = Hub.objects.get_or_create(
         latitude=float(lat),
         longitude=float(lon),
@@ -24,7 +22,7 @@ for line in r[1:]:
         hub=h
     )
     
-"""
+
 with open("main/dataset/people-with-companies.csv", "r") as f:
     r = f.readlines()
     
@@ -32,7 +30,7 @@ with open("main/dataset/people-with-companies.csv", "r") as f:
 User.objects.filter(is_superuser=False).delete()
 
 for line in r[1:]:
-    print(line)
+    #print(line)
     if len(line.split(",")) > 12:
         line = re.sub(r'"[^"]+"', line.split('"')[1].replace(",", ";"), line)
         print("###", line)
@@ -51,4 +49,3 @@ for line in r[1:]:
         longitude=lon,
         company_id=company_id
     )
-    """

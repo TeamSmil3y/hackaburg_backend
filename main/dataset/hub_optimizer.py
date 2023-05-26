@@ -3,7 +3,7 @@ from django.db.models import Q
 from sklearn.cluster import DBSCAN
 import numpy as np
 
-threshold = 0.001 # in rad
+threshold = 0.0005 # in rad
 
 hubs = Hub.objects.all()
 
@@ -40,6 +40,4 @@ for label in unique_labels:
 
 
 new_hubs_ids = [i.id for i in new_hubs]
-
-Hub.objects.all().exclude(id__in=new_hubs_ids).delete()
 
