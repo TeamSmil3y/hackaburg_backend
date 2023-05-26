@@ -3,14 +3,14 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
+import { useQuery } from "react-query";
+import axios from "axios";
 
 import { Welcome } from "./features/welcome";
+import { FlowManager } from "./features/flowManager";
 
 import './App.css'
-import {FlowManager} from "./features/flowManager/FlowManager";
-
-var username;
-var password;
+import {Map} from "./features/map/Map";
 
 const router = createBrowserRouter([
   {
@@ -25,6 +25,9 @@ const router = createBrowserRouter([
 
 function App() {
   const [modal, setModal] = useState(false);
+
+  const data = useQuery('hubs', () => axios('http://localhost:80/get_hubs/'))
+  console.log(data)
 
   useEffect(() => {
     if (!localStorage.getItem('mode')) {
@@ -46,7 +49,8 @@ function App() {
           <button onClick={() => setMode('passenger')}>Passenger</button>
         </div>
       )}
-      <RouterProvider router={router} />
+      <Map hubs={} />
+      {/*<RouterProvider router={router} />*/}
     </div>
   )
 }
