@@ -9,6 +9,12 @@ from .models import User
 from .ride_manager import *
 from .update_manager import *
 from .ride_workload_calc import *
+from django.core import serializers
+
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import authentication_classes, permission_classes
+
 
 # login
 @api_view(['POST'])
@@ -20,7 +26,8 @@ def user_login(request):
 
 # logout
 @api_view(['GET'])
-@login_required(login_url="/login/")
+@authentication_classes([SessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
 def user_logout(request):
     user = request.user
     logout(user)
@@ -35,29 +42,31 @@ def user_signup(request):
 
 # request ride
 @api_view(['POST'])
-@login_required(login_url="/login/")
+@authentication_classes([SessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
 @http_post_required_params(['source_hub_id', 'destination_hub_id'])
 def create_ride(request):
     source_hub_id = request.POST['source_hub_id']
-    source_hub = get_hub(source_hub_id)
+    source_hub = Hub.objects.get(id=source_hub_id)
     destination_hub_id = request.POST['destination_hub_id']
-    destination_hub = get_hub(destination_hub_id)
+    destination_hub = Hub.objects.get(id=destination_hub_id)
     driver = request.user
     
-    ride = Ride.create(source_hub=source_hub, destination_hub=destination_hub, driver=driver)
+    ride = Ride.objects.create(source_hub=source_hub, destination_hub=destination_hub, driver=driver)
     low_points, company_low_points = calc_points_warning(ride)
-    return Response(data={"ride": ride, "low_points_warning": low_points, "company_low_points": company_low_points}, status=200)
+    return Response({"ride": serializers.serialize("json", [ride]), "low_points_warning": low_points, "company_low_points": company_low_points}, status=200)
 
 # cancel ride
 @api_view(['POST'])
-@login_required(login_url="/login/")
+@authentication_classes([SessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
 @http_post_required_params(['ride_id'])
 def cancel_ride(request):
     ride_id = request.POST['ride_id']
-    ride = get_ride(ride_id)
+    ride = Ride.objects.get(id=ride_id)
     if ride.driver==request.user:
         ride.delete()
-        for passenger in ride.passengers:
+        for passenger in Ride2Passengers.objects.filter(ride=ride):
             push_event(user=passenger, event={'type': "ride_cancelled", "ride": ride})
         return Response(status=200)
     else:
@@ -65,9 +74,10 @@ def cancel_ride(request):
 
 class JoinRequest:
     active_join_requests = []
-    def __init__(self, user, ride_id):
+    def __init__(self, user, ride_id, passenger_hub_id=None):
         self.user = user
         self.ride_id = ride_id
+        self.passenger_hub_id = passenger_hub_id
     @classmethod
     def add(cls, request):
         cls.active_join_requests.append(request)
@@ -84,26 +94,29 @@ class JoinRequest:
 
 
 # accept ride
-@login_required(login_url="/login/")
+
 @api_view(['POST'])
+@authentication_classes([SessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
 @http_post_required_params(['ride_id', 'passenger_hub_id'])
 def request_join_ride(request):
     user = request.user
     ride_id = request.POST['ride_id']
     passenger_hub_id = request.POST['passenger_hub_id']
-    JoinRequest.add(JoinRequest(user=user, ride_id=ride_id))
+    JoinRequest.add(JoinRequest(user=user, ride_id=ride_id, passenger_hub_id=passenger_hub_id))
     ride = get_ride(ride_id)
-    hub = ...
+    hub = Hub.objects.get(id=passenger_hub_id)
     push_event(user=ride.driver, event={'type': "join_request", "passenger": user, "extra_time": ride.get_duration(additional=hub) - ride.get_duration()})
     
     ride = get_ride(ride_id)
     low_points, company_low_points = calc_points_warning(ride)
-    return Response(data={"ride": ride, "low_points_warning": low_points, "company_low_points": company_low_points}, status=200)
+    return Response(data={"ride": serializers.serialize("json", [ride]), "low_points_warning": low_points, "company_low_points": company_low_points}, status=200)
 
 
 # cancel join request
-@login_required(login_url="/login/")
 @api_view(['POST'])
+@authentication_classes([SessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
 @http_post_required_params(['ride_id'])
 def cancel_join_request(request):
     user = request.user
@@ -116,24 +129,34 @@ def cancel_join_request(request):
     return Response(status=200)
 
 # accept ride
-@login_required(login_url="/login/")
 @api_view(['POST'])
+@authentication_classes([SessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
 @http_post_required_params(['ride_id', 'passenger_id'])
 def accept_join_request(request):
-    id = request.POST['passenger-id']
-    passenger = User.objects.filter(id=id)
-    JoinRequest.remove_all(passenger)
+    id = request.POST['passenger_id']
+    passenger = User.objects.get(id=id)
+
 
     ride_id = request.POST['ride_id']
-    ride = get_ride(id)
-    join_ride(ride=ride, user=passenger)
+    ride = Ride.objects.get(id=ride_id)
+
+    for i in JoinRequest.active_join_requests:
+        if i.user == passenger and i.ride_id == ride_id:
+            hub = i.passenger_hub_id
+            break
+
+    JoinRequest.remove_all(passenger)
+
+    join_ride(ride=ride, user=passenger, hub=Hub.objects.get(id=hub))
     push_event(user=passenger, event={'type': "joined_ride", "ride": ride})
     return Response(status=200)
 
 
 # finish ride -> points etc
-@login_required(login_url="/login/")
 @api_view(['POST'])
+@authentication_classes([SessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
 @http_post_required_params(["ride_id"])
 def finish_ride(request):
     ride_id = request.POST['ride_id']
@@ -144,25 +167,30 @@ def finish_ride(request):
     else:
         points = calc_points(ride)
         user.points += points
-        for passenger in ride.passengers:
+        for passenger in ride.passengers.all():
             passenger.points += points
         return Response(status=200)
 
 # find rides to join
-@login_required(login_url="/login/")
 @api_view(['POST'])
+@authentication_classes([SessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
 @http_post_required_params(["source_hub_id", "destination_hub_id"])
 def find_rides(request):
     source_hub_id = request.POST['source_hub_id']
-    source_hub = get_hub(source_hub_id)
+    source_hub = Hub.objects.get(id=source_hub_id)
     destination_hub_id = request.POST['destination_hub_id']
-    destination_hub = get_hub(destination_hub_id)
+    destination_hub = Hub.objects.get(id=destination_hub_id)
+
+    if destination_hub is None:
+        return Response("No ride to this Destination available")
     
     rides = find_relevant_rides(source_hub=source_hub, destination_hub=destination_hub)
-    return Response(data=rides, status=200)
+    return Response(data=serializers.serialize("json", rides), status=200)
 
-@login_required(login_url="/login/")
 @api_view(['GET'])
+@authentication_classes([SessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
 def update(request):
     user = request.user
     return Response(data=request_update(user), status=200)
@@ -170,4 +198,4 @@ def update(request):
 
 @api_view(['GET'])
 def get_hubs(request):
-    return Response(data=Hub.objects.all(), status=200)
+    return Response(data=serializers.serialize('json', Hub.objects.all()), status=200)

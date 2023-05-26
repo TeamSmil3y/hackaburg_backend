@@ -1,12 +1,12 @@
 import datetime
 
-from .models import Hub, User, Ride, Company
+from .models import Hub, User, Ride, Company, Ride2Passengers
 
 
 # calculates amount of points for ride
 def calc_points(ride: Ride):
-    workload = get_hub_workload(ride.destination_hub)
-    passenger_multiplier = len(ride.passengers)
+    workload = get_hub_workload(ride.destination_hub, day=ride.destination_time.weekday(), hour=ride.destination_time.hour)
+    passenger_multiplier = len(Ride2Passengers.objects.filter(ride=ride))
     points = int((100/workload)*1000*passenger_multiplier)
     return points
 
@@ -18,7 +18,15 @@ def calc_points_warning(ride: Ride):
     hour = dt.hour
     
     hub_workload = get_hub_workload(ride.destination_hub, hour=hour, day=today)
-    company_workload = get_company_workload(ride.destination_hub, hour=hour,day=today)
+
+    passengers = Ride2Passengers.objects.filter(ride=ride)
+    if len(passengers) > 0:
+        company_workload = sum([get_company_workload(i.user.company, hour=hour,day=today) for i in passengers]) / len(passengers)
+        company_workload = (company_workload + get_company_workload(ride.driver.company, hour=hour, day=today)) / 2
+
+    else:
+        company_workload = get_company_workload(ride.driver.company, hour=hour, day=today)
+
 
     threshold = 0.5
     return hub_workload > threshold, company_workload > threshold

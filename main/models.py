@@ -24,7 +24,7 @@ class User(AbstractUser):
     
     adress = models.CharField(max_length=500)
     
-    points = models.IntegerField()
+    points = models.IntegerField(default=0)
     
     latitude = models.FloatField()
     longitude = models.FloatField()
@@ -115,7 +115,8 @@ class Ride(models.Model):
     is_full = models.BooleanField(default=False)
     
     def get_duration(self, additional=None):
-        sources = [i.source_hub for i in self.passengers.objects.all()]
+        sources = [i.source_hub for i in self.passengers.all()]
+        sources.append(self.source_hub)
         if additional is not None:
             sources.append(additional)
         return routes.get_route_duration(sources, self.destination_hub)
