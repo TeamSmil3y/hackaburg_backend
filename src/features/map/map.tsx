@@ -11,11 +11,14 @@ const fetch_hubs = () => {
 }
 fetch_hubs()
 
-const get_location: float[] = async () => {
+const get_location = async () => {
     let loc = [0, 0]
-    await navigator.geolocation.getCurrentPosition((position) => {
-        loc = [position.coords.latitude, position.coords.longitude]
-        console.log("ll" + loc)
+    await new Promise((res) => {
+        navigator.geolocation.getCurrentPosition((position) => {
+            loc = [position.coords.latitude, position.coords.longitude]
+            console.log("ll" + loc)
+            res()
+        })
     })
     return loc
 }
@@ -23,7 +26,9 @@ const get_location: float[] = async () => {
 export const Map = () => {
     const [location, setLocation] = useState([0, 0])
     useEffect(() => {
-        const func = async () => { console.log("gl " + await get_location()) }
+        const func = async () => {
+            setLocation(await get_location())
+        }
         func()
     }, [])
     console.log(location)
@@ -33,11 +38,11 @@ export const Map = () => {
         // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
         style: 'mapbox://styles/mapbox/streets-v12', // style URL
         center: location, // starting position [lng, lat]
-        zoom: 9 
+        zoom: 9
     })}, 50);
-    
-    
-    
+
+
+
     return (
         <div style={{display: "grid"}}>
             <div id="map"></div>
