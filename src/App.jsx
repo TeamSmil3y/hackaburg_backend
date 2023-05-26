@@ -9,6 +9,9 @@ import { Welcome } from "./features/welcome";
 import './App.css'
 import {FlowManager} from "./features/flowManager/FlowManager";
 
+var username;
+var password;
+
 const router = createBrowserRouter([
   {
     path: "/",
