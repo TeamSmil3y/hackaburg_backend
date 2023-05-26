@@ -54,33 +54,39 @@ export const Map = () => {
                 }
             )
 
-            map.addSource('point', {
-                    'type': 'geojson',
-                    'data': {
-                        'type': 'FeatureCollection',
-                        'features': [
-                            {
-                            'type': 'Feature',
-                            'properties': {},
-                            'geometry': {
-                                'type': 'Point',
-                                'coordinates': loc
-                            }
+            fetch("http://localhost:80/get_hubs/").then((r)=>{r.json().then((j)=>{
+                j = JSON.parse(j)
+                for (var i = 0; i < j.length; i++) {
+                    var element = j[i]
+                    console.warn(element)
+                    map.addSource(element["pk"], {
+                        'type': 'geojson',
+                        'data': {
+                            'type': 'FeatureCollection',
+                            'features': [
+                                {
+                                    'type': 'Feature',
+                                    'geometry': {
+                                        'type': 'Point',
+                                        'coordinates': [element["fields"]["longitude"], element["fields"]["latitude"]],
+                                    }
+                                }
+                            ]
                         }
-                    ]
-                }
-            });
+                    });
 
-            // Add a layer to use the image to represent the data.
-            map.addLayer({
-                'id': 'points',
-                'type': 'symbol',
-                'source': 'point', // reference the data source
-                'layout': {
-                    'icon-image': 'cat', // reference the image
-                'icon-size': 0.25
-                }
-            });
+                    // Add a layer to use the image to represent the data.
+                    map.addLayer({
+                        'id': element["pk"],
+                        'type': 'symbol',
+                        'source': element["pk"], // reference the data source
+                        'layout': {
+                            'icon-image': 'circle', // reference the image
+                            'icon-size': 0.2
+                        }
+                    });
+                };
+            })})
     })
   };
 
