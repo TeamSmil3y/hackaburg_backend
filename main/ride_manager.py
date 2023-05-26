@@ -3,7 +3,7 @@ from django.db.models import Q
 import numpy as np
 import uuid
 
-from math import acos
+from math import acos, pi, exp
 
 # get ride by id
 def get_ride(id):
@@ -38,8 +38,11 @@ def find_relevant_rides(source_hub, destination_hub):
         angle = acos(np.dot(vector_a, vector_b)/(np.linalg.norm(vector_a)*np.linalg.norm(vector_b)))
 
         print("angle", angle)
+
+        def threshold(x, a=0.79):
+            return ((pi - a) * exp(-x)) + b
         
-        if angle <= 0.79:
+        if angle <= threshold(source_hub-destination_hub):
             relevant_rides_ids.append(ride.id)
             
     relevant_rides = Ride.objects.filter(id__in=relevant_rides_ids)
