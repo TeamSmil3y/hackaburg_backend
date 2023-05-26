@@ -28,7 +28,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
-
+CSRF_TRUSTED_ORIGINS = ["https://api.hubhopper.app", "https://hubhopper.up.railway.app", "http://api.hubhopper.app", "http://hubhopper.up.railway.app"]
 # Application definition
 
 INSTALLED_APPS = [
