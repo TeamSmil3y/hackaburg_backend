@@ -191,7 +191,7 @@ def find_rides(request):
     destination_hub = Hub.objects.get(id=destination_hub_id)
 
     if destination_hub is None:
-        return Response("No ride to this Destination available")
+        return Response("No ride to this Destination available", status=400)
     
     rides = find_relevant_rides(source_hub=source_hub, destination_hub=destination_hub)
     return Response(data=serializers.serialize("json", rides), status=200)
