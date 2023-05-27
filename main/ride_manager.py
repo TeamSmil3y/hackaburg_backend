@@ -37,7 +37,7 @@ def find_relevant_rides(source_hub, destination_hub):
         vector_a = source_hub.get_vector(destination_hub)
         vector_b = ride.get_vector()
         
-        angle = acos(np.dot(vector_a, vector_b)/(np.linalg.norm(vector_a)*np.linalg.norm(vector_b)))
+        angle = acos(np.dot(vector_a, vector_b)/(sqrt(vector_a[0]**2 + vector_a[1]**2)*sqrt(vector_b[0]**2 + vector_b[1]**2)))
 
         print("angle", angle)
         
