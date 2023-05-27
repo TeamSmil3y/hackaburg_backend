@@ -30,6 +30,15 @@ def find_relevant_rides(source_hub, destination_hub):
     def threshold(x, a=(pi / 2)):
         return ((2*pi - a) * exp(-.5*x)) + a
 
+    def unit_vector(vector):
+        """ Returns the unit vector of the vector.  """
+        return vector / np.linalg.norm(vector)
+
+    def angle_between(v1, v2):
+        v1_u = unit_vector(v1)
+        v2_u = unit_vector(v2)
+        return np.arccos(np.clip(np.dot(v1_u, v2_u), -1.0, 1.0))
+
     # get all rides with same destination
     relevant_rides = Ride.objects.filter(destination_hub=destination_hub)
     relevant_rides_ids = []
@@ -37,7 +46,7 @@ def find_relevant_rides(source_hub, destination_hub):
         vector_a = source_hub.get_vector(destination_hub)
         vector_b = ride.get_vector()
         
-        angle = acos(np.dot(vector_a, vector_b)/(sqrt(vector_a[0]**2 + vector_a[1]**2)*sqrt(vector_b[0]**2 + vector_b[1]**2)))
+        angle = angle_between(vector_a, vector_b)
 
         print("angle", angle)
         
