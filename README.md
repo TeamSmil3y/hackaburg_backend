@@ -56,7 +56,9 @@ with some additional randomized parameters.
 <img src="https://imgur.com/Ig5DG2T.png" width="50%"/>
 
 ### Hub Optimization
+Located in: `main/dataset/hub_optimizer.py`
 
+The very dense located Hubs get clustered by a density-based clustering algorithm (DBSCAN), implemented using scikit-learn. Hubs which distance is below a certain threshold are getting clustered, and all old Hubs get replaced by a new Hub whose coordinates are the mean values of all the old ones per cluster. 
 
 ## Utils
 
