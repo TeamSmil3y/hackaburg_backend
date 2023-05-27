@@ -35,6 +35,7 @@ Located in: `main/models.py`
 + destination_hub _(foreignKey->Hub)_
 + passengers _(m2n through **Ride2Passengers**)_
 + is_full _(bool)_
++ points _(int)_
 
 **Ride2Passengers**
 + ride _(foreignKey->**Ride**)_
