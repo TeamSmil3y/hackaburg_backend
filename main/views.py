@@ -17,7 +17,6 @@ from rest_framework.decorators import authentication_classes, permission_classes
 
 # login
 @api_view(['POST'])
-@http_post_required_params(['username', 'password'])
 def user_login(request):
     user = authenticate(username=request.data['username'], password=request.data['password'])
     if not user: return Response(data={"error": "wrong credentials or serverside error"}, status=400)
@@ -43,7 +42,6 @@ def user_signup(request):
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
-@http_post_required_params(['source_hub_id', 'destination_hub_id'])
 def create_ride(request):
     source_hub_id = request.data['source_hub_id']
     source_hub = Hub.objects.get(id=source_hub_id)
@@ -63,7 +61,6 @@ def create_ride(request):
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
-@http_post_required_params(['ride_id'])
 def cancel_ride(request):
     ride_id = request.data['ride_id']
     ride = Ride.objects.get(id=ride_id)
@@ -101,7 +98,6 @@ class JoinRequest:
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
-@http_post_required_params(['ride_id', 'passenger_hub_id'])
 def request_join_ride(request):
     user = request.user
     ride_id = request.data['ride_id']
@@ -120,7 +116,6 @@ def request_join_ride(request):
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
-@http_post_required_params(['ride_id'])
 def cancel_join_request(request):
     user = request.user
     ride_id = request.data['ride_id']
@@ -135,7 +130,6 @@ def cancel_join_request(request):
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
-@http_post_required_params(['ride_id', 'passenger_id'])
 def accept_join_request(request):
     id = request.data['passenger_id']
     passenger = User.objects.get(id=id)
@@ -164,7 +158,6 @@ def accept_join_request(request):
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
-@http_post_required_params(["ride_id"])
 def finish_ride(request):
     ride_id = request.data['ride_id']
     ride = get_ride(ride_id)
