@@ -55,12 +55,13 @@ class Company(models.Model):
     
     hub = models.ForeignKey("Hub", on_delete=models.CASCADE)
     
-    workload = models.CharField(max_length=2100, validators=(int_list_validator,), default=("0,"*24 + ";")*7)
+    workload = models.CharField(max_length=2100, validators=(int_list_validator,), default=((("0,"*24)[:-1] + ";")*7)[:-1])
     
     def __getitem__(self, i):
         d, h = i
+
         w = self.workload.split(";")
-        w = [list(map(int, i[:-1].split(","))) for i in w if i != ""]
+        w = [list(map(int, i.split(","))) for i in w if i != ""]
         
         return w[d][h]
         
