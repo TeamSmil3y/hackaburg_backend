@@ -183,7 +183,6 @@ def finish_ride(request):
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
-@http_post_required_params(["source_hub_id", "destination_hub_id"])
 def find_rides(request):
     source_hub_id = request.POST['source_hub_id']
     source_hub = Hub.objects.get(id=source_hub_id)
