@@ -40,7 +40,7 @@ def find_relevant_rides(source_hub, destination_hub):
         print("angle", angle)
 
         def threshold(x, a=0.79):
-            return ((pi - a) * exp(-x)) + b
+            return ((pi - a) * exp(-x)) + a
         
         if angle <= threshold(source_hub-destination_hub):
             relevant_rides_ids.append(ride.id)
