@@ -185,7 +185,13 @@ def find_rides(request):
         return Response("No ride to this Destination available", status=400)
     
     rides = find_relevant_rides(source_hub=source_hub, destination_hub=destination_hub)
-    return Response(data=serializers.serialize("json", rides), status=200)
+
+    s = serializers.serialize("json", rides)
+
+    for i in range(len(s)):
+        s[i]["fields"]["user"] = f"{rides[i].user.first_name} {rides[i].user.last_name}"
+
+    return Response(data=s, status=200)
 
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication, BasicAuthentication])
