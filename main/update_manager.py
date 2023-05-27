@@ -19,7 +19,7 @@ def push_event(user, event):
 
 @need_user
 def request_update(user):
-    update = events[user]
+    update = events[user].copy()
     events[user] = []
     
     return update
