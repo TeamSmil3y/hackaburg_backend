@@ -19,7 +19,7 @@ from rest_framework.decorators import authentication_classes, permission_classes
 @api_view(['POST'])
 @http_post_required_params(['username', 'password'])
 def user_login(request):
-    user = authenticate(username=request.POST['username'], password=request.POST['password'])
+    user = authenticate(username=request.data['username'], password=request.data['password'])
     if not user: return Response(data={"error": "wrong credentials or serverside error"}, status=400)
     return Response(status=200)
 
@@ -45,9 +45,9 @@ def user_signup(request):
 @permission_classes([IsAuthenticated])
 @http_post_required_params(['source_hub_id', 'destination_hub_id'])
 def create_ride(request):
-    source_hub_id = request.POST['source_hub_id']
+    source_hub_id = request.data['source_hub_id']
     source_hub = Hub.objects.get(id=source_hub_id)
-    destination_hub_id = request.POST['destination_hub_id']
+    destination_hub_id = request.data['destination_hub_id']
     destination_hub = Hub.objects.get(id=destination_hub_id)
     driver = request.user
     
@@ -65,7 +65,7 @@ def create_ride(request):
 @permission_classes([IsAuthenticated])
 @http_post_required_params(['ride_id'])
 def cancel_ride(request):
-    ride_id = request.POST['ride_id']
+    ride_id = request.data['ride_id']
     ride = Ride.objects.get(id=ride_id)
     if ride.driver==request.user:
         ride.delete()
@@ -104,8 +104,8 @@ class JoinRequest:
 @http_post_required_params(['ride_id', 'passenger_hub_id'])
 def request_join_ride(request):
     user = request.user
-    ride_id = request.POST['ride_id']
-    passenger_hub_id = request.POST['passenger_hub_id']
+    ride_id = request.data['ride_id']
+    passenger_hub_id = request.data['passenger_hub_id']
     JoinRequest.add(JoinRequest(user=user, ride_id=ride_id, passenger_hub_id=passenger_hub_id))
     ride = get_ride(ride_id)
     hub = Hub.objects.get(id=passenger_hub_id)
@@ -123,7 +123,7 @@ def request_join_ride(request):
 @http_post_required_params(['ride_id'])
 def cancel_join_request(request):
     user = request.user
-    ride_id = request.POST['ride_id']
+    ride_id = request.data['ride_id']
     ride = get_ride(ride_id)
     
     JoinRequest.remove(user=user, ride_id=ride_id)
@@ -137,11 +137,11 @@ def cancel_join_request(request):
 @permission_classes([IsAuthenticated])
 @http_post_required_params(['ride_id', 'passenger_id'])
 def accept_join_request(request):
-    id = request.POST['passenger_id']
+    id = request.data['passenger_id']
     passenger = User.objects.get(id=id)
 
 
-    ride_id = request.POST['ride_id']
+    ride_id = request.data['ride_id']
     ride = Ride.objects.get(id=ride_id)
 
     for i in JoinRequest.active_join_requests:
@@ -166,7 +166,7 @@ def accept_join_request(request):
 @permission_classes([IsAuthenticated])
 @http_post_required_params(["ride_id"])
 def finish_ride(request):
-    ride_id = request.POST['ride_id']
+    ride_id = request.data['ride_id']
     ride = get_ride(ride_id)
     user = request.user
     if ride.driver != user:
@@ -183,9 +183,9 @@ def finish_ride(request):
 @authentication_classes([SessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
 def find_rides(request):
-    source_hub_id = request.POST['source_hub_id']
+    source_hub_id = request.data['source_hub_id']
     source_hub = Hub.objects.get(id=source_hub_id)
-    destination_hub_id = request.POST['destination_hub_id']
+    destination_hub_id = request.data['destination_hub_id']
     destination_hub = Hub.objects.get(id=destination_hub_id)
 
     if destination_hub is None:
