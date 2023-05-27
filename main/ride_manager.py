@@ -3,7 +3,7 @@ from django.db.models import Q
 import numpy as np
 import uuid
 
-from math import acos, pi, exp
+from math import acos, pi, exp, sqrt
 
 # get ride by id
 def get_ride(id):
