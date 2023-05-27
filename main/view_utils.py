@@ -1,4 +1,5 @@
 from django.http import HttpRequest, HttpResponse
+from rest_framework.response import Response
 
 def http_get_only(func):
     def wrapper(request, *args, **kwargs):
@@ -21,7 +22,7 @@ def http_post_required_params(params: list):
         def wrapper(request):
             for param in params:
                 if param not in request.POST.keys():
-                    return
+                    return Response(error='missing required post params', status=400)
             return func(request)
         return wrapper
     return inner
