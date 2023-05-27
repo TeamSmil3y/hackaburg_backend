@@ -27,7 +27,9 @@ def get_hub(id):
 
 # function will return a list of ride requests that are relevant to the input ride request
 def find_relevant_rides(source_hub, destination_hub):
-    
+    def threshold(x, a=(pi / 2)):
+        return ((2*pi - a) * exp(-.5*x)) + a
+
     # get all rides with same destination
     relevant_rides = Ride.objects.filter(destination_hub=destination_hub)
     relevant_rides_ids = []
@@ -38,9 +40,6 @@ def find_relevant_rides(source_hub, destination_hub):
         angle = acos(np.dot(vector_a, vector_b)/(np.linalg.norm(vector_a)*np.linalg.norm(vector_b)))
 
         print("angle", angle)
-
-        def threshold(x, a=(pi/2)):
-            return ((pi - a) * exp(-x)) + a
         
         if angle <= threshold(source_hub-destination_hub):
             relevant_rides_ids.append(ride.id)
