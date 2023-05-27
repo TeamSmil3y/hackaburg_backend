@@ -51,8 +51,10 @@ The script `main/dataset/import_data.py` imports these two csv-sheets into the D
 ### Pseudodata
 Because we needed data about the usual workload of offices/hubs, we created pseudodata for every weekday and every hour for all companies.
 The data is based on the function
+
 <img src="https://imgur.com/YRstch0.png" width="50%"/>
 with some additional randomized parameters.
+
 <img src="https://imgur.com/Ig5DG2T.png" width="50%"/>
 
 ### Hub Optimization
