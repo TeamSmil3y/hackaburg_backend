@@ -29,7 +29,19 @@ DEBUG = True
 ALLOWED_HOSTS = ["*"]
 
 CSRF_TRUSTED_ORIGINS = ["https://api.hubhopper.app", "https://hubhopper.up.railway.app", "http://api.hubhopper.app", "http://hubhopper.up.railway.app", "http://localhost:5173", "http://127.0.0.1:5173"]
-# Application definition
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ALLOWED_ORIGINS = [
+    "http://127.0.0.1",
+    "http://localhost",
+    "http://127.0.0.1:5173",
+    "http://localhost:5173",
+
+]
+CORS_ALLOW_CREDENTIALS = False
+
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -46,8 +58,6 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",
-    'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -56,6 +66,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "django.middleware.common.CommonMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
+    'django.middleware.common.CommonMiddleware',
 
 ]
 
@@ -156,6 +168,3 @@ REST_FRAMEWORK = {
 
 
 AUTH_USER_MODEL = 'main.User'
-
-CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOW_CREDENTIALS = True
