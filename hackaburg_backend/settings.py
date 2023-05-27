@@ -32,6 +32,7 @@ CSRF_TRUSTED_ORIGINS = ["https://api.hubhopper.app", "https://hubhopper.up.railw
 # Application definition
 
 INSTALLED_APPS = [
+    "corsheaders",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -41,7 +42,6 @@ INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
     "main",
     "rest_framework",
-    "corsheaders"
 ]
 
 MIDDLEWARE = [
