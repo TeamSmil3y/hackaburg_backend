@@ -67,7 +67,7 @@ def cancel_ride(request):
     if ride.driver==request.user:
         ride.delete()
         for passenger in Ride2Passengers.objects.filter(ride=ride):
-            push_event(user=passenger, event={'type': "ride_cancelled", "ride": ride})
+            push_event(user=passenger, event={'type': "ride_cancelled", "ride": serializers.serialize("json", [ride])})
         return Response(status=200)
     else:
         return Response(data={"error": "not owner"}, status=400)
@@ -105,7 +105,7 @@ def request_join_ride(request):
     JoinRequest.add(JoinRequest(user=user, ride_id=ride_id, passenger_hub_id=passenger_hub_id))
     ride = get_ride(ride_id)
     hub = Hub.objects.get(id=passenger_hub_id)
-    push_event(user=ride.driver, event={'type': "join_request", "passenger": user, "extra_time": ride.get_duration(additional=hub) - ride.get_duration()})
+    push_event(user=ride.driver, event={'type': "join_request", "passenger": serializers.serialize("json", [user]), "extra_time": ride.get_duration(additional=hub) - ride.get_duration()})
     
     ride = get_ride(ride_id)
     low_points, company_low_points = calc_points_warning(ride)
@@ -123,7 +123,7 @@ def cancel_join_request(request):
     
     JoinRequest.remove(user=user, ride_id=ride_id)
     
-    push_event(user=ride.driver, event={'type': 'cancel_join_request', 'passenger': user})
+    push_event(user=ride.driver, event={'type': 'cancel_join_request', 'passenger': serializers.serialize("json", [user])})
     return Response(status=200)
 
 # accept ride
@@ -150,7 +150,7 @@ def accept_join_request(request):
     ride.points = calc_points(ride)
     ride.save()
 
-    push_event(user=passenger, event={'type': "joined_ride", "ride": ride})
+    push_event(user=passenger, event={'type': "joined_ride", "ride": serializers.serialize("json", [ride])})
     return Response(status=200)
 
 
@@ -206,7 +206,8 @@ def find_rides(request):
 @permission_classes([IsAuthenticated])
 def update(request):
     user = request.user
-    return Response(data=request_update(user), status=200)
+    data = request_update(user)
+    return Response(data=data, status=200)
 
 
 @api_view(['GET'])
