@@ -10,7 +10,6 @@ from .ride_manager import *
 from .update_manager import *
 from .ride_workload_calc import *
 from django.core import serializers
-from corsheaders.decorators import corsheaders
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import authentication_classes, permission_classes
