@@ -186,11 +186,19 @@ def find_rides(request):
     
     rides = find_relevant_rides(source_hub=source_hub, destination_hub=destination_hub)
 
-    s = serializers.serialize("json", rides)
-
-    for i in range(len(s)):
-        s[i]["fields"]["user"] = f"{rides[i].user.first_name} {rides[i].user.last_name}"
-
+    s = []
+    for ride in rides :
+        if ride.is_full: continue
+        s.append({
+            "pk": ride.id,
+            "fields": {
+                "driver": f"{ride.driver.first_name} {ride.driver.last_name}",
+                "source_hub": ride.source_hub.id,
+                "destination_hub": ride.destination_hub.id,
+                "destination_time": ride.destination_time.strftime("%m/%d/%Y, %H:%M:%S"),
+                "points": ride.points
+            }
+        })
     return Response(data=s, status=200)
 
 @api_view(['GET'])
