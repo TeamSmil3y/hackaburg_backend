@@ -60,7 +60,7 @@ class Company(models.Model):
     def __getitem__(self, i):
         d, h = i
         w = self.workload.split(";")
-        w = [list(map(int, i[:-1].split(","))) for i in w]
+        w = [list(map(int, i[:len(i)-1].split(","))) for i in w]
         
         return w[d][h]
         
