@@ -41,12 +41,12 @@ INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
     "main",
     "rest_framework",
-    #"corsheaders",
+    "corsheaders",
 
 ]
 
 MIDDLEWARE = [
-    #"corsheaders.middleware.CorsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     "whitenoise.middleware.WhiteNoiseMiddleware",
@@ -157,5 +157,5 @@ REST_FRAMEWORK = {
 
 AUTH_USER_MODEL = 'main.User'
 
-#CORS_ALLOW_ALL_ORIGINS = True
-#CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
