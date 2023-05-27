@@ -196,7 +196,7 @@ def find_rides(request):
                 "source_hub": ride.source_hub.id,
                 "destination_hub": ride.destination_hub.id,
                 "destination_time": ride.destination_time.strftime("%m/%d/%Y, %H:%M:%S"),
-                "points": ride.points
+                "points": calc_points(ride, additional=True)
             }
         })
     return Response(data=s, status=200)
