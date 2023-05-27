@@ -7,7 +7,7 @@ from .models import Hub, User, Ride, Company, Ride2Passengers
 def calc_points(ride: Ride):
     workload = get_hub_workload(ride.destination_hub, day=ride.destination_time.weekday(), hour=ride.destination_time.hour)
     passenger_multiplier = len(Ride2Passengers.objects.filter(ride=ride))
-    points = int((100/workload)*1000*passenger_multiplier)
+    points = int((100-workload)*1000*passenger_multiplier)
     return points
 
 
